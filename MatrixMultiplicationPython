@@ -54,8 +54,6 @@ def matrix_multiplication(A,B): #Function computes the multplication itself
                 for k in range(len(A[0])):
                     ans[i][j]=ans[i][j]+A[i][k]*B[k][j]
         return ans
-            
-        
     else:
         print("The matrices are not compatible for multiplication")
         return False
