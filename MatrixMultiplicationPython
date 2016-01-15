@@ -1,0 +1,139 @@
+def check_matrix(C): #Checks if all the rows are the same. Not actually useful when using
+                     #input from main. But, checks if all items in the list are of the same
+                     #lenght.
+    '''                
+    (lst)->bool
+    Checks if given list is in matrix format or not and returns True or False.
+    Precondition : All items of the list has to be lists
+    '''                                             
+    for i in range(len(C)):                         
+        for j in range(len(C[i])):                  
+            if type(C[i][j]) is int:
+                pass
+            elif type(C[i][j]) is float:
+                pass
+            else:
+                return False
+    for k in range(len(C)-1):
+        if len(C[k])!=len(C[k+1]):
+            return False
+    return True
+                       
+def check_compability(D,E): #Useful for not running into a index error when matrices
+                            #are not compatible for multiplication
+    '''
+    (lst,lst)->bool
+    Checks if DE is defined. Returns True or False.
+    '''
+    m1=check_matrix(D)
+    m2=check_matrix(E)
+    if m1==True:
+        if m2==True:
+            if len(D[0])==len(E): #Since the condition for multiplication is that
+                return True       #the number of rows in the first matrix is equal
+            else:                 #to the number of columns in the second, it checks
+                return False      #if they are equal. But first, using check_matrix ,
+        else:                     #assures that all rows on both matrices are the same
+            return False          #for the matrix.
+    else:
+        return False
+
+def matrix_multiplication(A,B): #Function computes the multplication itself
+    '''
+    (lst,lst)->lst
+    Given two lists describing matrices, checks if AB is defined, if it is, returns AB.
+    '''
+    proceed=check_compability(A,B)  #Before running the multiplication, will stop it
+    if proceed==True:               #if it cant be done, preventing an error.
+        ans=[]
+        for a in range(len(A)):
+            ans.append([0]*len(B[0]))
+        for i in range(len(ans)):
+            for j in range(len(ans[0])):
+                ans[i][j]=0
+                for k in range(len(A[0])):
+                    ans[i][j]=ans[i][j]+A[i][k]*B[k][j]
+        return ans
+            
+        
+    else:
+        print("The matrices are not compatible for multiplication")
+        return False
+
+def max_input_lenght(M):
+    '''
+    (lst)->int
+    Returns the lenght of the longest item in the matrix
+    Precondition: Items in the list are items
+    '''
+    maximum=0
+    for a in M:
+        for b in a:
+            if len(str(b)) > maximum:
+                maximum=len(str(b))
+            else:
+                pass
+    return maximum
+
+
+def matrix_input(): #Organised input for user
+    lst=[]
+    finallst=[]
+    flag=False
+    while flag!=True:
+        try:
+            rows=int(input('Enter how many rows you want : '))
+            flag=True
+        except ValueError:
+            print('This is not an interger')
+            flag=False
+    print('Enter each input for the row seperated by a space.')
+    for i in range(rows):
+        print('Row',i+1,':')
+        line=input()
+        lst.append(line)
+    for j in range(len(lst)):
+        newrow=lst[j].split()
+        finallst.append(newrow)
+    for k in range(len(finallst)):
+        for l in range(len(finallst[k])):
+            finallst[k][l]=int(finallst[k][l])
+    return finallst
+
+
+        
+##########   MAIN    #############
+
+print("First matrix input : ")
+flag=False
+while flag!=True:
+    mA=matrix_input()
+    flag=check_matrix(mA)
+    if flag==False:
+        print("The received rows did not form a matrix, please re-input the matrix.")
+        print()
+
+print()
+
+print("Second matrix input : ")
+flag=False
+while flag!=True:
+    mB=matrix_input()
+    flag=check_matrix(mB)
+    if flag==False:
+        print("The received rows did not form a matrix, please re-input the matrix.")
+        print()
+
+print()
+
+mAmB=matrix_multiplication(mA,mB)                    
+
+if mAmB!=False:
+    maxlenght=max_input_lenght(mAmB)   
+    print("The resulting matrix is:")
+    print()   
+    for row in mAmB:        #Print a neatly organized version of the matrix. All columns
+        for item in row:    #are lined up, space between each start of column is the same
+            print(str(item)+' '*((maxlenght+2)-len(str(item))), end=' ')
+        print()
+
