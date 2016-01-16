@@ -1,0 +1,93 @@
+import random
+
+def create_board(size):
+    '''int->list (of str)
+       Precondition: size is even positive integer between 2 and 52    
+    '''
+    board = [None]*size 
+
+    letter='A'
+    for i in range(len(board)//2):
+          board[i]=letter
+          board[i+len(board)//2 ]=board[i]
+          letter=chr(ord(letter)+1)
+    random.shuffle(board)
+    return board
+
+def print_board(a):
+    '''(list of str)->None
+       Prints the current board in a nicely formated way
+    '''
+    for i in range(len(a)):
+        print('{0:4}'.format(a[i]), end=' ')
+    print()
+    for i in range(len(a)):
+        print('{0:4}'.format(str(i+1)), end=' ')
+
+
+def wait_for_player():
+    '''(None)->None
+    Pauses the program until the user presses enter
+    '''
+    try:
+        input("Press enter to continue ")
+    except SyntaxError:
+        pass
+
+def play_game(board):
+    '''(list of str)->None
+
+    Plays the memory game given the board to play on.
+    '''
+
+    discovered=[False]*len(board)
+    liveboard=['*']*len(board)
+    turncounter=1
+    while False in discovered:
+        for i in range(len(discovered)):
+            if discovered[i]==False:
+                liveboard[i]='*'
+                
+        print_board(liveboard)
+        print()
+        print()
+        guess1=0
+        while guess1 not in range(1,len(board)+1):
+            guess1=int(input('First guess in the range [1,'+str(len(board))+']? '))
+        guess2=0
+        while guess2 not in range(1,len(board)+1) or guess2 == guess1:
+            guess2=int(input('Second guess in the range [1,'+str(len(board))+']? '))
+        
+        if board[guess1-1]==board[guess2-1]:
+            discovered[guess1-1]=True
+            discovered[guess2-1]=True
+            
+        liveboard[guess1-1]=board[guess1-1]
+        liveboard[guess2-1]=board[guess2-1]
+        
+        print()
+        print_board(liveboard)
+        print()
+        print()
+        
+        if False in discovered:
+            wait_for_player()
+            for i in range(50):
+                print()
+            turncounter=turncounter+1
+            
+    print("Congratulation! You finished in",turncounter,"turns!")
+    if turncounter-len(board)//2!=0:
+        print("That is",turncounter-len(board)//2,"more turns than the best possible")
+    else:
+        print("You guessed in the least amount of guesses possible!")
+
+
+######## Main ##########
+
+size=1
+while size%2!=0 or (not size<=52 or not size>=2):
+    size=int(input('What size of a board would you like to play on? '))   
+board=create_board(size)
+play_game(board)
+
